@@ -1,0 +1,81 @@
+FROM alpine:3.9
+LABEL org.opencontainers.image.authors="Peter Bottenberg <cyberjack77@gmail.com>" \
+      description="Lightweight container to run PHP in ci jobs."
+
+# Install composer
+COPY --from=composer:1.10 /usr/bin/composer /usr/bin/composer1
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+# Add the ci user and group, and install packages and remove default server definition
+RUN addgroup -S ci \
+    && adduser -S \
+        -h /home/ci \
+        -s /bin/bash \
+        -G root \
+        -G ci \
+        -u 1000 ci \
+    \
+    && apk --no-cache add \
+    bash \
+    curl \
+    findutils \
+    git \
+    openssh-client \
+    patch \
+    php7 \
+    php7-bcmath \
+    php7-ctype \
+    php7-curl \
+    php7-phpdbg \
+    php7-dom \
+    php7-fileinfo \
+    php7-ftp \
+    php7-gd \
+    php7-iconv \
+    php7-imap \
+    php7-intl \
+    php7-json \
+    php7-mbstring \
+    php7-mysqli \
+    php7-openssl \
+    php7-pcntl \
+    php7-pdo_mysql \
+    php7-pdo_pgsql \
+    php7-pdo_sqlite \
+    php7-pecl-mongodb \
+    php7-pgsql \
+    php7-phar \
+    php7-phpdbg \
+    php7-posix \
+    php7-session \
+    php7-simplexml \
+    php7-soap \
+    php7-sockets \
+    php7-sodium \
+    php7-tokenizer \
+    php7-xml \
+    php7-xmlreader \
+    php7-xmlwriter \
+    php7-xsl \
+    php7-zip \
+    rsync \
+    zip \
+    \
+    # Setup working directories
+    && mkdir -p /app \
+    && chown -R ci:ci /app \
+    \
+    # Prepare bash usage
+    && echo "alias ll=\"ls -alFh\"" >> /home/ci/.bashrc \
+    && chown ci:ci /home/ci/.bashrc
+
+COPY ./php-ini-overrides.ini /etc/php7/conf.d/
+
+ENV PATH="/home/ci/.composer/vendor/bin:${PATH}"
+WORKDIR /app
+
+USER ci
+
+RUN composer1 config --global repo.packagist composer https://packagist.org
+
+CMD ["/bin/bash"]

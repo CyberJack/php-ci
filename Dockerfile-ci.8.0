@@ -1,0 +1,84 @@
+FROM alpine:3.16
+LABEL org.opencontainers.image.authors="Peter Bottenberg <cyberjack77@gmail.com>" \
+      description="Lightweight container to run PHP in ci jobs."
+
+# Install composer
+COPY --from=composer:1.10 /usr/bin/composer /usr/bin/composer1
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+# Add the ci user and group, and install packages and remove default server definition
+RUN addgroup -S ci \
+    && adduser -S \
+      -h /home/ci \
+      -s /bin/bash \
+      -G root \
+      -G ci \
+      -u 1000 ci \
+    \
+    && apk --no-cache add \
+    bash \
+    curl \
+    findutils \
+    git \
+    openssh-client \
+    patch \
+    php8 \
+    php8-bcmath \
+    php8-ctype \
+    php8-curl \
+    php8-phpdbg \
+    php8-dom \
+    php8-fileinfo \
+    php8-ftp \
+    php8-gd \
+    php8-iconv \
+    php8-imap \
+    php8-intl \
+    php8-json \
+    php8-mbstring \
+    php8-mysqli \
+    php8-openssl \
+    php8-pcntl \
+    php8-pdo_mysql \
+    php8-pdo_pgsql \
+    php8-pdo_sqlite \
+    php8-pecl-mongodb \
+    php8-pgsql \
+    php8-phar \
+    php8-phpdbg \
+    php8-posix \
+    php8-session \
+    php8-simplexml \
+    php8-soap \
+    php8-sockets \
+    php8-sodium \
+    php8-tokenizer \
+    php8-xml \
+    php8-xmlreader \
+    php8-xmlwriter \
+    php8-xsl \
+    php8-zip \ 
+    rsync \
+    zip \
+    \
+    # Symlink phpdbg
+    && ln -s /usr/bin/phpdbg8 /usr/bin/phpdbg \
+    \
+    # Setup working directories
+    && mkdir -p /app \
+    && chown -R ci:ci /app \
+    \
+    # Prepare bash usage
+    && echo "alias ll=\"ls -alFh\"" >> /home/ci/.bashrc \
+    && chown ci:ci /home/ci/.bashrc
+
+COPY ./php-ini-overrides.ini /etc/php8/conf.d/
+
+ENV PATH="/home/ci/.composer/vendor/bin:${PATH}"
+WORKDIR /app
+
+USER ci
+
+RUN composer1 config --global repo.packagist composer https://packagist.org
+
+CMD ["/bin/bash"]
