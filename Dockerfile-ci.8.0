@@ -62,9 +62,6 @@ RUN addgroup -S ci \
     rsync \
     zip \
     \
-    # Symlink phpdbg
-    && ln -s /usr/bin/phpdbg8 /usr/bin/phpdbg \
-    \
     # Setup working directories
     && mkdir -p /app \
     && chown -R ci:ci /app \
