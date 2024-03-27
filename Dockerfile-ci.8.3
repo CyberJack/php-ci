@@ -43,6 +43,7 @@ RUN addgroup -S ci \
     php83-pdo_mysql \
     php83-pdo_pgsql \
     php83-pdo_sqlite \
+    php83-pecl-amqp \
     php83-pecl-mongodb \
     php83-pgsql \
     php83-phar \
@@ -74,7 +75,7 @@ RUN addgroup -S ci \
     && echo "alias ll=\"ls -alFh\"" >> /home/ci/.bashrc \
     && chown ci:ci /home/ci/.bashrc
 
-COPY ./php-ini-overrides.ini /etc/php81/conf.d/
+COPY ./php-ini-overrides.ini /etc/php83/conf.d/
 
 ENV PATH="/home/ci/.composer/vendor/bin:${PATH}"
 WORKDIR /app

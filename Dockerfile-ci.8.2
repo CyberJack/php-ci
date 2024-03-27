@@ -43,6 +43,7 @@ RUN addgroup -S ci \
     php82-pdo_mysql \
     php82-pdo_pgsql \
     php82-pdo_sqlite \
+    php82-pecl-amqp \
     php82-pecl-mongodb \
     php82-pgsql \
     php82-phar \
@@ -62,10 +63,6 @@ RUN addgroup -S ci \
     rsync \
     zip \
     \
-    # symlink php8 to php
-    && ln -s /usr/bin/php82 /usr/bin/php \
-    && ln -s /usr/bin/phpdbg82 /usr/bin/phpdbg \
-    \
     # Setup working directories
     && mkdir -p /app \
     && chown -R ci:ci /app \
@@ -74,7 +71,7 @@ RUN addgroup -S ci \
     && echo "alias ll=\"ls -alFh\"" >> /home/ci/.bashrc \
     && chown ci:ci /home/ci/.bashrc
 
-COPY ./php-ini-overrides.ini /etc/php81/conf.d/
+COPY ./php-ini-overrides.ini /etc/php82/conf.d/
 
 ENV PATH="/home/ci/.composer/vendor/bin:${PATH}"
 WORKDIR /app

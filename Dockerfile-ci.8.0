@@ -42,6 +42,7 @@ RUN addgroup -S ci \
     php8-pdo_mysql \
     php8-pdo_pgsql \
     php8-pdo_sqlite \
+    php8-pecl-amqp \
     php8-pecl-mongodb \
     php8-pgsql \
     php8-phar \
