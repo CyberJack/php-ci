@@ -26,7 +26,6 @@ RUN addgroup -S ci \
     php8-bcmath \
     php8-ctype \
     php8-curl \
-    php8-phpdbg \
     php8-dom \
     php8-fileinfo \
     php8-ftp \
