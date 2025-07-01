@@ -24,16 +24,22 @@ RUN addgroup -S ci \
     patch \
     php8 \
     php8-bcmath \
+    php8-bz2 \
+    php8-calendar \
     php8-ctype \
     php8-curl \
     php8-dom \
+    php8-enchant \
+    php8-exif \
+    php8-ffi \
     php8-fileinfo \
     php8-ftp \
     php8-gd \
+    php8-gettext \
+    php8-gmp \
     php8-iconv \
-    php8-imap \
     php8-intl \
-    php8-json \
+    php8-ldap \
     php8-mbstring \
     php8-mysqli \
     php8-openssl \
@@ -42,13 +48,13 @@ RUN addgroup -S ci \
     php8-pdo_pgsql \
     php8-pdo_sqlite \
     php8-pecl-amqp \
-    php8-pecl-mongodb \
     php8-pgsql \
     php8-phar \
     php8-phpdbg \
     php8-posix \
     php8-session \
     php8-simplexml \
+    php8-snmp \
     php8-soap \
     php8-sockets \
     php8-sodium \
@@ -57,7 +63,7 @@ RUN addgroup -S ci \
     php8-xmlreader \
     php8-xmlwriter \
     php8-xsl \
-    php8-zip \ 
+    php8-zip \
     rsync \
     zip \
     \

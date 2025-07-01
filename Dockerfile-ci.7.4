@@ -24,16 +24,23 @@ RUN addgroup -S ci \
     patch \
     php7 \
     php7-bcmath \
+    php7-bz2 \
+    php7-calendar \
     php7-ctype \
     php7-curl \
     php7-dom \
+    php7-enchant \
+    php7-exif \
+    php7-ffi \
     php7-fileinfo \
     php7-ftp \
     php7-gd \
+    php7-gettext \
+    php7-gmp \
     php7-iconv \
-    php7-imap \
     php7-intl \
     php7-json \
+    php7-ldap \
     php7-mbstring \
     php7-mysqli \
     php7-openssl \
@@ -42,14 +49,13 @@ RUN addgroup -S ci \
     php7-pdo_pgsql \
     php7-pdo_sqlite \
     php7-pecl-amqp \
-    php7-pecl-mongodb \
     php7-pgsql \
     php7-phar \
-    php7-phpdbg \
     php7-phpdbg \
     php7-posix \
     php7-session \
     php7-simplexml \
+    php7-snmp \
     php7-soap \
     php7-sockets \
     php7-sodium \
@@ -77,6 +83,6 @@ WORKDIR /app
 
 USER ci
 
-RUN composer1 config --global repo.packagist composer https://packagist.org
+RUN ls -alFh /usr/bin/composer1; composer1 config --global repo.packagist composer https://packagist.org
 
 CMD ["/bin/bash"]
