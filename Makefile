@@ -1,4 +1,4 @@
-export VERSIONS = 8.4 8.3 8.2 8.1 8.0 7.4
+export VERSIONS = 8.5 8.4 8.3 8.2 8.1 8.0 7.4
 
 .DEFAULT_GOAL = build-all
 .PHONY        : build-all
@@ -11,6 +11,9 @@ help: ## Outputs this help screen
 
 build-all: ## Build all the php-ci images
 	$(foreach var,$(VERSIONS), docker buildx build --quiet -t cyberjack/php-ci:$(var) -f Dockerfile-ci.$(var) . ;)
+
+build-8.5: ## Build the php 8.5 image
+	docker buildx build --quiet -t cyberjack/php-ci:8.5 -f Dockerfile-ci.8.5 .
 
 build-8.4: ## Build the php 8.4 image
 	docker buildx build --quiet -t cyberjack/php-ci:8.4 -f Dockerfile-ci.8.4 .

@@ -1,0 +1,92 @@
+FROM alpine:3.23
+LABEL org.opencontainers.image.authors="Peter Bottenberg <cyberjack77@gmail.com>" \
+      description="Lightweight container to run PHP in ci jobs."
+
+# Install composer
+COPY --from=composer:1.10 /usr/bin/composer /usr/bin/composer1
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+# Add the ci user and group, and install packages and remove default server definition
+RUN addgroup -S ci \
+    && adduser -S \
+      -h /home/ci \
+      -s /bin/bash \
+      -G root \
+      -G ci \
+      -u 1000 ci \
+      \
+    && apk --no-cache add \
+    bash \
+    curl \
+    findutils \
+    git \
+    openssh-client \
+    patch \
+    php85 \
+    php85-bcmath \
+    php85-bz2 \
+    php85-calendar \
+    php85-ctype \
+    php85-curl \
+    php85-dom \
+    php85-enchant \
+    php85-exif \
+    php85-ffi \
+    php85-fileinfo \
+    php85-ftp \
+    php85-gd \
+    php85-gettext \
+    php85-gmp \
+    php85-iconv \
+    php85-intl \
+    php85-ldap \
+    php85-mbstring \
+    php85-mysqli \
+    php85-openssl \
+    php85-pcntl \
+    php85-pdo_mysql \
+    php85-pdo_pgsql \
+    php85-pdo_sqlite \
+    php85-pecl-amqp \
+    php85-pecl-imap \
+    php85-pgsql \
+    php85-phar \
+    php85-phpdbg \
+    php85-posix \
+    php85-session \
+    php85-simplexml \
+    php85-snmp \
+    php85-soap \
+    php85-sockets \
+    php85-sodium \
+    php85-tokenizer \
+    php85-xml \
+    php85-xmlreader \
+    php85-xmlwriter \
+    php85-xsl \
+    php85-zip \ 
+    rsync \
+    zip \
+    \
+    # symlink php8 to php
+    && ln -s /usr/bin/php85 /usr/bin/php \
+    && ln -s /usr/bin/phpdbg85 /usr/bin/phpdbg \
+    \
+    # Setup working directories
+    && mkdir -p /app \
+    && chown -R ci:ci /app \
+    \
+    # Prepare bash usage
+    && echo "alias ll=\"ls -alFh\"" >> /home/ci/.bashrc \
+    && chown ci:ci /home/ci/.bashrc
+
+COPY ./php-ini-overrides.ini /etc/php85/conf.d/
+
+ENV PATH="/home/ci/.composer/vendor/bin:${PATH}"
+WORKDIR /app
+
+USER ci
+
+RUN composer1 config --global repo.packagist composer https://packagist.org
+
+CMD ["/bin/bash"]
