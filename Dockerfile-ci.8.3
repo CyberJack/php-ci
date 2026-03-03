@@ -1,4 +1,4 @@
-FROM alpine:edge
+FROM alpine:3.23
 LABEL org.opencontainers.image.authors="Peter Bottenberg <cyberjack77@gmail.com>" \
       description="Lightweight container to run PHP in ci jobs."
 
@@ -15,7 +15,7 @@ RUN addgroup -S ci \
       -G ci \
       -u 1000 ci \
     \
-    && apk --no-cache --repository=https://dl-cdn.alpinelinux.org/alpine/edge/testing add \
+    && apk --no-cache add \
     bash \
     curl \
     findutils \
@@ -67,6 +67,10 @@ RUN addgroup -S ci \
     php83-zip \
     rsync \
     zip \
+    \
+    # symlink php8 to php
+    && ln -s /usr/bin/php83 /usr/bin/php \
+    && ln -s /usr/bin/phpdbg83 /usr/bin/phpdbg \
     \
     # Setup working directories
     && mkdir -p /app \
