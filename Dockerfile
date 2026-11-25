@@ -1,5 +1,5 @@
 ARG PHP_VERSION=85
-ARG ALPINE_VERSION=3.23
+ARG ALPINE_VERSION=3.24
 
 FROM alpine:${ALPINE_VERSION}
 
@@ -7,11 +7,17 @@ LABEL org.opencontainers.image.authors="Peter Bottenberg <cyberjack77@gmail.com>
       description="Lightweight container to run PHP in ci jobs."
 
 ARG PHP_VERSION
+ARG ENABLE_TESTING_REPO=false
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 # Add the ci user and group, and install packages
-RUN addgroup -S ci \
+RUN if [ "${ENABLE_TESTING_REPO}" = "true" ]; then \
+        echo "https://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories \
+        && apk update; \
+    fi \
+    \
+    && addgroup -S ci \
     && adduser -S -h /home/ci -s /bin/bash -G root -G ci -u 1000 ci \
     \
     && apk --no-cache add \
@@ -76,7 +82,8 @@ RUN addgroup -S ci \
     && chown -R ci:ci /app \
     \
     && echo "alias ll=\"ls -alFh\"" >> /home/ci/.bashrc \
-    && chown ci:ci /home/ci/.bashrc
+    && chown ci:ci /home/ci/.bashrc \
+    && rm -rf /var/cache/apk/*
 
 COPY ./php-ini-overrides.ini /etc/php${PHP_VERSION}/conf.d/
 
